@@ -1,16 +1,13 @@
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import java.util.List;
-import java.util.Set;
-import java.util.Map;
-import java.util.HashSet;
-import java.util.HashMap;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 import org.objectweb.asm.tree.analysis.*;
+
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 public class CFGTest {
     private CFG cfg;
@@ -24,8 +21,8 @@ public class CFGTest {
         ClassReader cr;
         try {
             cr = new ClassReader("M");
-        } catch (java.io.IOException e) { 
-            throw new RuntimeException("Can't open class M"); 
+        } catch (java.io.IOException e) {
+            throw new RuntimeException("Can't open class M");
         }
         final ClassNode cn = new ClassNode();
         m = cn;
@@ -77,7 +74,7 @@ public class CFGTest {
 
     @Test
     public void addNode_duplicate() {
-        cfg.addEdge(1000, m_m, m, 
+        cfg.addEdge(1000, m_m, m,
                 1001, m_m, m);
         cfg.addNode(1000, m_m, m);
         CFG.Node n = new CFG.Node(1000, m_m, m);
@@ -147,9 +144,9 @@ public class CFGTest {
             CFG.Node mCopy = new CFG.Node(m.position, m.method, m.clazz);
             Set<CFG.Node> mNeighbours = cfg.edges.get(m);
             Set<CFG.Node> mNeighboursCopy = new HashSet<CFG.Node>();
-            
+
             for(CFG.Node mm : mNeighbours) {
-                CFG.Node mmCopy = new CFG.Node(mm.position, mm.method, mm.clazz);  
+                CFG.Node mmCopy = new CFG.Node(mm.position, mm.method, mm.clazz);
                 mNeighboursCopy.add(mmCopy);
             }
 
@@ -178,9 +175,9 @@ public class CFGTest {
             CFG.Node mCopy = new CFG.Node(m.position, m.method, m.clazz);
             Set<CFG.Node> mNeighbours = cfg.edges.get(m);
             Set<CFG.Node> mNeighboursCopy = new HashSet<CFG.Node>();
-            
+
             for(CFG.Node mm : mNeighbours) {
-                CFG.Node mmCopy = new CFG.Node(mm.position, mm.method, mm.clazz);  
+                CFG.Node mmCopy = new CFG.Node(mm.position, mm.method, mm.clazz);
                 mNeighboursCopy.add(mmCopy);
             }
 
@@ -199,26 +196,26 @@ public class CFGTest {
 
     @Test
     public void reachable_true() {
-        assertTrue(cfg.isReachable(0, m_m, m, 
-                    3, m_m, m));
+        assertTrue(cfg.isReachable(0, m_m, m,
+                3, m_m, m));
     }
 
     @Test
     public void reachable_unreachable() {
-        assertFalse(cfg.isReachable(59, m_m, m, 
-                    0, m_m, m));
+        assertFalse(cfg.isReachable(59, m_m, m,
+                0, m_m, m));
     }
 
     @Test
     public void reachable_missingSrc() {
         assertFalse(cfg.isReachable(-100, m_m, m,
-                    0, m_m, m));
+                0, m_m, m));
     }
 
     @Test
     public void reachable_missingTarget() {
         assertFalse(cfg.isReachable(0, m_m, m, 1000, m_m, m));
-    } 
+    }
 
 }
 
@@ -235,7 +232,7 @@ class M {
             case 1: o = new A(); q = 10; break;
             case 2: o = new B(); q = 5; break;
             case 3: o = new A(); new B(); q = 25; break;
-            default: o = new B(); break; 
+            default: o = new B(); break;
         }
         if (arg.length() > 0) {
             o.m();
@@ -246,13 +243,13 @@ class M {
 }
 
 class A {
-    public void m() { 
+    public void m() {
         System.out.println("a");
     }
 }
 
 class B extends A {
-    public void m() { 
+    public void m() {
         System.out.println("b");
     }
 }

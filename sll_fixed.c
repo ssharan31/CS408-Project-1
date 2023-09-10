@@ -25,8 +25,8 @@ char *fgets_enhanced(FILE *f)
     char *temp;
     int buffersize = chunksize+1;
     char *nPos;
-    
-    s = malloc(buffersize);    
+
+    s = malloc(buffersize);
     if (s == NULL)
     {
         printf("Can't allocate %d bytes\n", buffersize);
@@ -61,8 +61,13 @@ char *fgets_enhanced(FILE *f)
             nPos = strchr(s, '\n');
         }
     }
-    /* ensure that we zero-terminate the returned buffer */
-    s[nPos-s] = 0;
+    /* ensure that we zero-terminate the returned buffer correctly */
+    if (nPos != NULL) {
+      s[nPos-s] = 0;
+    }
+    else {
+      s[buffersize-1] = 0; //Question 2.c bug fix
+    }
     return s;
 }
 
@@ -81,6 +86,7 @@ void delete_node(long int num)
             } else {
                 m->next = temp->next;
             }
+            free(temp->str);  // Free the memory allocated for the string - Question 2.a bug fix
             free(temp);
             return;
         } else {
@@ -103,7 +109,11 @@ void delete_all()
 
         free(temp2->str);
         free(temp2);
+        // Set the pointer to NULL to avoid dangling pointer
+        temp2 = NULL; //Question 2.b bug fix
     }
+    // Set the head of the list to NULL
+    p = NULL; //2.b fix
 }
 
 void prepend(long int num, char* name)
@@ -206,7 +216,7 @@ void append(long int num, char* name)
     temp->data = num;
     temp->str = name;
 
-    struct node *r = p;    
+    struct node *r = p;
     /* add at beginning when p is null */
     if (p == NULL)
     {
@@ -235,7 +245,7 @@ void display()
     {
         printf(" -> %li",r->data);
         printf(", %s",r->str);
-        
+
         r = r->next;
     }
     printf("\n");
@@ -320,7 +330,9 @@ int main()
             }
             case 'x':
             {
-                delete_all();
+                if (p != NULL) {
+                  delete_all();
+                }
                 printf("bye\n");
                 return 0;
             }
